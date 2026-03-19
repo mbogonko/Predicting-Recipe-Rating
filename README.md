@@ -137,7 +137,7 @@ Our cleaned dataframe ended up with 234429 rows and 30 columns. Here are the fir
 For this analysis, we examined the distribution of the proportion of sugar in a recipe. As the plot below shows, the distribution skewed to the right, indicating that most of the recipes on food.com have a low proportion of sugar. There is also a decreasing trend, indicating that as the proportion of sugar in recipes gets higher, there are less of those recipes on food.com.
 
 <iframe
-  src="assets/univariate.html"
+  src="assets/carb_dist.html"
   width="800"
   height="600"
   frameborder="0"
@@ -148,7 +148,7 @@ For this analysis, we examined the distribution of the proportion of sugar in a 
 For this analysis, we examined the distribution of the rating of the recipe conditioned between the sugary recipes and non-sugary recipes. The graph below shows that recipes with rating of 3, 4 and 5 are more likely to be non-sugary recipes while the recipes with rating of 1 and 2 are more likely to be sugary recipes. We would dive deeper to see if the difference in these proportions are significant in later sections.
 
 <iframe
-  src="assets/bivariate.html"
+  src="assets/rating_sugar.html"
   width="800"
   height="600"
   frameborder="0"
@@ -239,38 +239,32 @@ The **observed statistic** of **51.45** is indicated by the red vertical line on
 
 ## Hypothesis Testing
 
-As mentioned in the introduction, we are curious about whether people rate sugary recipes and non-sugary recipes on the same scale. By sugary recipes, we are talking about recipes with a proportion of sugar higher than the average proportion of sugar. Proportion of sugar is referring to the values in `'prop_sugar'`, which are the proportion of sugar in calories out of the total calories of the recipe.
+As mentioned in the introduction, we are curious about whether people rate low carb recipes and high carb recipes on the same scale. This uses the values in `'carbs_binned'`, which splits the carb data in half based on whether the carb value is above the median.
 
 To investigate the question, we ran a **permutation test** with the following hypotheses, test statistic, and significance level.
 
 **Null Hypothesis:** People rate all the recipes on the same scale.
 
-**Alternative Hypothesis:** People rate sugary recipes lower than non-sugary recipes.
+**Alternative Hypothesis:** People rate low carb recipes higher than high carb recipes.
 
 **Test Statistic:** The difference in mean between rating of sugary recipes and non-sugary recipes.
 
 **Significance Level:** 0.05
 
-The reason we chose to run a permutation test is because we do not have any information of any population, and we want to check if the two distributions look like they come from the same population. We proposed that **people rate the sugary recipes lower** because people might be concerned with the negative health risks relating to the recipe, and we would like to know all the opinions from the users, so we used rating instead of average rating of the recipes. For the test statistic, we chose the difference in mean of the ratings of two groups of recipes instead of absolute difference in mean. This is because we have a directional hypothesis, which is that people rate sugary recipes lower than other recipes. By looking at the difference in mean between the two groups, we can see what type of recipes typically have a higher rating, which answers our question.
+The reason we chose to run a permutation test is because we do not have any information of any population, and we want to check if the two distributions look like they come from the same population. We proposed that **people rate the low carb recipes higher**. For the test statistic, we chose the difference in mean of the ratings of two groups of recipes instead of absolute difference in mean. This is because we have a directional hypothesis, which is that people low carb recipes higher than other recipes. By looking at the difference in mean between the two groups, we can see what type of recipes typically have a higher rating, which answers our question.
 
-To run the test, we first split the data points into two groups, sugary, which are recipes with proportion of sugar higher than the mean proportion of sugar, and the rest of the data points are in the non-sugary group. The **observed statistic** is **-0.0097**.
+The **observed statistic** is **0.031**.
 
-Then we shuffled the ratings for 1000 times to collect 1000 simulating mean differences in the two distributions as described in the test statistic. We got a **p-value** of **0.001**.
+Then we shuffled the ratings for 500 times to collect 500 simulating mean differences in the two distributions as described in the test statistic. We got a **p-value** of **0.001**.
 
-<iframe
-  src="assets/empirical_diff_rating.html"
-  width="800"
-  height="600"
-  frameborder="0"
-></iframe>
 
 #### Conclusion of Permutation Test
 
-Since the **p-value** that we found **(0.002)** is less than the significance level of 0.05, we **reject the null hypothesis**. People do not rate all the recipes on the same scale, and they tend to rate sugary recipes lower. One plausible explanation for this founding could be that people are concerned with health risks relating to sugary recipes, such as diabetes.
+Since the **p-value** that we found **(0.0)** is less than the significance level of 0.05, we **reject the null hypothesis**. People do not rate all the recipes on the same scale, and they tend to rate sugary recipes lower. One plausible explanation for this founding could be that people are concerned with health risks relating to sugary recipes, such as diabetes.
 
 ## Framing a Prediction Problem
 
-We plan to **predict average rating of a recipe** which would be a **classification problem** since we can treat rating as a ordinal categorical variable if we round the average rating so that we only have [1, 2, 3, 4, 5] as possible values. To address our prediction problem, we will build a multi-class classifier since our average ratings have 5 possible values that the model will predict from.
+We plan to **predict rating of a recipe** which would be a **classification problem** since we can treat rating as a ordinal categorical variable if we round the average rating so that we only have [1, 2, 3, 4, 5] as possible values. To address our prediction problem, we will build a multi-class classifier since our average ratings have 5 possible values that the model will predict from.
 
 We chose the average rating of a recipe as a response variable because it is a good representation of the overall rating of a recipe. We have also previously found significant correlation between rating and sugary recipes, which are recipes with proportion of sugar higher than the average proportion of sugar, so we may be able to predict the rating through the proportion of sugar.
 
