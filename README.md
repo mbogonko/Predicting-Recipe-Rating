@@ -185,41 +185,35 @@ Interestingly, the graph shows that as the cooking time increases the proportion
 
 Three columns, `'date'`, `'rating'`, and `'review'`, in the merged dataset have a significant amount of missing values, so we decided to assess the missingness on the dataframe.
 
-### NMAR Analysis
+### MNAR Analysis
 
-We believe that the missingness of the `'review'` column is NMAR, because if people feel indifferent about the recipe, they are less likely to leave a review for it since they would feel like they have nothing significant to talk about. People usually will leave a review only if they have stronger emotions towards the recipe. Their emotions would motivate them to go onto the page, click multiple buttons to leave, and take some time out of their day to write a review. For example, people who enjoyed the recipe would be willing to do all the work to leave a good review for the recipe.
+I believe that the missingness of the `'date'` column is MNAR. It is possible that the system went down for a day and may have not recorded dates for a certain review, meaning that the missingness depends on the date. 
 
 ### Missingness Dependency
 
-We moved on to examine the missingness of `'rating'` in the merged DataFrame by testing the dependency of its missingness. We are investigating whether the missiness in the `'rating'` column depends on the column `'prop_sugar'`, which is the proportion of sugar out of the total calories, or the column `'n_steps'`, which is the number of steps of the recipe.
+I moved on to examine the missingness of `'rating'` in the merged DataFrame by testing the dependency of its missingness. We are investigating whether the missiness in the `'rating'` column depends on the number of tags a recipe has or the cooking time of the recipe.
 
-> Proportion of Sugar and Rating
+> Number of Tags
 
-**Null Hypothesis:** The missingness of ratings does not depend on the proportion of sugar in the recipe.
+**Null Hypothesis:** The missingness of ratings does not depend on the number of tags in a recipe.
 
 **Alternate Hypothesis:** The missingness of ratings does depend on the proportion of sugar in the recipe.
 
-**Test Statistic:** The absolute difference of mean in the proportion of sugar of the distribution of the group without missing ratings and the distribution of the group without missing ratings.
+**Test Statistic:** The absolute difference of mean in the number of tags of the distribution of the group without missing ratings and the distribution of the group without missing ratings.
 
 **Significance Level:** 0.05
 
+
+We ran a permutation test by shuffling the missingness of rating for 500 times to collect 500 simulating mean differences in the two distributions as described in the test statistic.
+
 <iframe
-  src="assets/distr_rating_sugar.html"
+  src="assets/numtags.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
 
-We ran a permutation test by shuffling the missingness of rating for 1000 times to collect 1000 simulating mean differences in the two distributions as described in the test statistic.
-
-<iframe
-  src="assets/empirical_diff_sugar.html"
-  width="800"
-  height="600"
-  frameborder="0"
-></iframe>
-
-The **observed statistic** of **0.0063** is indicated by the red vertical line on the graph. Since the **p_value** that we found **(0.0)** is < 0.05 which is the significance level that we set, we **reject the null hypothesis**. The missingness of `'rating'` does depend on the `'prop_sugar'`, which is proportion of sugar in the recipe.
+The **observed statistic** of **0.45** is indicated by the red vertical line on the graph. Since the **p_value** that we found **(0.0)** is < 0.05 which is the significance level that we set, we **reject the null hypothesis**. The missingness of `'rating'` does depend on the number of tags.
 
 > Minutes and Rating
 
@@ -231,32 +225,17 @@ The **observed statistic** of **0.0063** is indicated by the red vertical line o
 
 **Significance Level:** 0.05
 
+
+We ran another permutation test by shuffling the missingness of rating for 500 times to collect 500 simulating mean differences in the two distributions as described in the test statistic.
+
 <iframe
-  src="assets/empirical_diff_prescale.html"
+  src="assets/minutes.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
 
-Due to the outliers in cooking time, it is difficult to identify the shapes of the two distributions, so we update the scale to take a closer look.
-
-<iframe
-  src="assets/distr_rating_minutes.html"
-  width="800"
-  height="600"
-  frameborder="0"
-></iframe>
-
-We ran another permutation test by shuffling the missingness of rating for 1000 times to collect 1000 simulating mean differences in the two distributions as described in the test statistic.
-
-<iframe
-  src="assets/empirical_diff_minutes.html"
-  width="800"
-  height="600"
-  frameborder="0"
-></iframe>
-
-The **observed statistic** of **51.4524** is indicated by the red vertical line on the graph. Since the **p-value** that we found **(0.123)** is > 0.05 which is the significance level that we set, we **fail to reject the null hypothesis**. The missingness of rating does not depend on the cooking time in minutes of the recipe.
+The **observed statistic** of **51.45** is indicated by the red vertical line on the graph. Since the **p-value** that we found **(0.116)** is > 0.05 which is the significance level that we set, we **fail to reject the null hypothesis**. The missingness of rating does not depend on the cooking time in minutes of the recipe.
 
 ## Hypothesis Testing
 
