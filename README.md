@@ -1,14 +1,14 @@
-# Investigation on the Relationship Between Amount of Sugar and Rating of Recipes
+# Investigation on the Relationship Between Amount of Carbohydrate and Rating of Recipes
 
-Authors: Angela Hu & Cecilia Lin
+Author: Mhone Bogonko
 
 ## Overview
 
-This data science project, conducted at UCSD, focus on exploring the relationship between the rating of a recipe and the proportion of sugar contributing to the total calories of the given recipe.
+This data science project, conducted at UCSD, focuses on exploring the relationship between the rating of a recipe and the amount of carbohydrate in the recipe.
 
 ## Introduction
 
-Food is a critical component of our daily lives, and cooking is a hobby that brings joy and satisfaction for many. While there are many of us who have a sweet tooth and love sugary food, the health risks associated with them, such as diabetes, are not negligible. According to the National Diabetes Statistics Report from Centers for Disease Control and Prevention, 11.6% of the US population have diabetes and over 38.0% of people over 18 years old have prediabetes. With this information in our mind, we want to investigate the relationship between rating and the amount of sugar present in the recipe. **We wonder if people would rate a sugary recipe lower due to the health concerns relating to it**. To do so, we are analyzing two dataset consisting of recipes and ratings posted since 2008 on [food.com](https://www.food.com/). The original purpose of the datasets is for the recommender system research paper, [Generating Personalized Recipes from Historical User Preferences](https://cseweb.ucsd.edu/~jmcauley/pdfs/emnlp19c.pdf) by Majumder et al.
+With many people on diets and tracking their carbs, I wondered if people would want lower carb recipes and like healthier recipes they enjoy. **I will investigate if people would rate a lower carb recipe high due to wanting to be healthy**. To do so, I am analyzing two dataset consisting of recipes and ratings posted since 2008 on [food.com](https://www.food.com/). The original purpose of the datasets is for the recommender system research paper, [Generating Personalized Recipes from Historical User Preferences](https://cseweb.ucsd.edu/~jmcauley/pdfs/emnlp19c.pdf) by Majumder et al.
 
 The first dataset, `recipe`, contains 83782 rows, indicating 83782 unique recipes, with 10 columns recording the following information:
 
@@ -37,7 +37,7 @@ The second dataset, `interactions`, contains 731927 rows and each row contains a
 | `'rating'`    | Rating given        |
 | `'review'`    | Review text         |
 
-**Given the datasets, we are investigating whether people rate sugary recipes and the non-sugary recipes on the same scale.** To facilitate the investigation of our question, we separated the values in the `'nutrition'` columns into the corresponding columns,`'calories (#)'`, `'total fat (PDV)'`, `'sugar (PDV)'`, etc. PDV, or percent daily value shows how much a nutrient in a serving of food contributes to a total daily diet. Moreover, we calculated the proportion of sugar in terms of calories out of the total calories of a given recipe and stored the information in a new column, `'prop_sugar'`. because sugary in here will be referring to the recipes with value `'prop_sugar'` higher than the average `'prop_sugar'`. The most relevant columns to answer our question are `'calories(#)'`, `'sugar (PDV)'`, `'prop_sugar'`, described above, `'rating'`, which is the rating that user gave on a recipe, and `'average rating'`, which are the average of the ratings on each unique recipes.
+**Given the datasets, I am investigating whether people rate low carb recipes and high carb recipes on the same scale.** To facilitate the investigation of this question, we separated the values in the `'nutrition'` columns into the corresponding columns,`'calories (#)'`, `'total fat (PDV)'`, `'sugar (PDV)'`, etc. PDV, or percent daily value shows how much a nutrient in a serving of food contributes to a total daily diet. The most relevant columns to answer our question are `'calories'`, `'sugar_percent'`, `'carb_percent'`, described above, `'rating'`, which is the rating that user gave on a recipe, and `'average rating'`, which are the average of the ratings on each unique recipes.
 
 By seeking an answer to our question, we would have an insight on people’s preference on sugary recipes, which could help contributors on Food.com revise and improve their recipes to align with the public’s interests. In addition, the new pieces of information could lead to future work on diving deeper into how much awareness people have on the negative health effects of sweets.
 
@@ -80,20 +80,18 @@ To make our analysis of the dataset more efficient and convenient, we conducted 
 
    - Since a recipe can have numerous ratings from different users, we take an average of all the ratings to get a more comprehensive understanding of the rating of a given recipe.
 
-1. Split values in the nutrition column to individual columns of floats.
+1. Split values in the nutrition column to individual columns of ints.
 
-   - Even though the values in the nutrition column look like a list, they are actually objects, which act like strings. Given by the description of the columns of the recipe dataset, we know what each individual values inside the brackets mean. To split up the values, we applied a lambda function then converted the columns to floats. It will allow us to conduct numerical calculations on the columns.
+   - Even though the values in the nutrition column look like a list, they are actually objects, which act like strings. Given by the description of the columns of the recipe dataset, we know what each individual values inside the brackets mean. To split up the values, we applied a lambda function then converted the columns to ints. It will allow us to conduct numerical calculations on the columns.
 
-1. Convert submitted and date to datetime.
+1. Add `'year'` to the dataframe
+   - `'year'` an int that represnts the year that a review was submitted
 
-   - These two columns are both stored as objects initially, so we converted them into datetime to allow us conduct analysis on trends over time if needed.
+1. Add `'easy'` to the dataframe
+   - `'easy'` is a boolean that represents whether the word easy is in the tags of a recipe
 
-1. Add `'is_dessert'` to the dataframe
-
-   - `'is_dessert'` is a boolean column checking if the tags of recipes contain 'dessert' since desserts typically have a higher amount of sugar. This step separates the recipes into two groups, ones that are dessert and ones that are not. This provides us another way to compare ratings of recipes with more sugar and ones with less sugar.
-
-1. Add `'prop_sugar'` to the dataframe
-   - prop_sugar is the proportion of sugar of the total calories in a recipe. To calculate this, we use the values in the sugar (PDV) column to divide by 100% to get it in the decimal form. Then, we multiply by 25 to convert the values to grams of sugar since 25 grams of sugar is the 100% daily value (PDV). We got this value of 25 grams from experimenting on food.com with different amounts of sugar in a recipe. The experimentation allows us to understand the nutrition formula used on the website for recipes. Lastly, we multiply by 4 since there are 4 calories in 1 gram of sugar. After all these conversions, we end up with the number of calories of sugar, so we can divide by the total amount of calories in the recipe to get the proportion of sugar of the total calories. This data cleaning step is critical to allow us to make parallel comparisons on the amount of sugar in a recipe without concerns of extremely large values since all the values will be between 0 and 1.
+1. Add `'carbs_binned'` and `'sugar_binned'` to the dataframe
+   - I split the carbs and sugar data into 2 equal sections based on if they were above or below the median. This makes it easier to visualize some of my plots that look at rating distribution across whether a recipe has a lot of sugar or carbs. These also help for my hypothesis testing where I find the difference between the mean rating of recipes that are above and below the carb median.
 
 #### Result
 Here are all the columns of the cleaned df.
