@@ -170,9 +170,6 @@ For this section, we investigated the distribution of the proportion of ratings 
   frameborder="0"
 ></iframe>
 
-Interestingly, the graph shows that as the cooking time increases the proportion of sugar in a recipe fluctuates more and more. According to the plot, tecipes take a long time could be either sugary or savory dishes. Also, the shapes of the line for mean and median looks very similar, especially for the recipes with shorter cooking time.
-
-
 ## Assessment of Missingness
 
 Three columns, `'date'`, `'rating'`, and `'review'`, in the merged dataset have missing values, so we decided to assess the missingness on the dataframe. The `'date'` only has one missing entry so I will focus on the other two columns
