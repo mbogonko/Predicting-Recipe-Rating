@@ -134,7 +134,7 @@ Our cleaned dataframe ended up with 234429 rows and 30 columns. Here are the fir
 
 ### Univariate Analysis
 
-For this analysis, we examined the distribution of the proportion of sugar in a recipe. As the plot below shows, the distribution skewed to the right, indicating that most of the recipes on food.com have a low proportion of sugar. There is also a decreasing trend, indicating that as the proportion of sugar in recipes gets higher, there are less of those recipes on food.com.
+For this analysis, we examined the distribution of the proportion of carbs in a recipe. As the plot below shows, the distribution skewed to the right, with most of the data together and a few outliers in the tail. There is also a decreasing trend, indicating that as the amount of carb in recipes gets higher, there are less of those recipes on food.com.
 
 <iframe
   src="assets/carb_dist.html"
@@ -145,7 +145,7 @@ For this analysis, we examined the distribution of the proportion of sugar in a 
 
 ### Bivariate Analysis
 
-For this analysis, we examined the distribution of the rating of the recipe conditioned between the sugary recipes and non-sugary recipes. The graph below shows that recipes with rating of 3, 4 and 5 are more likely to be non-sugary recipes while the recipes with rating of 1 and 2 are more likely to be sugary recipes. We would dive deeper to see if the difference in these proportions are significant in later sections.
+For this analysis, we examined the distribution of the rating of the recipe conditioned between the sugary recipes and non-sugary recipes. The graph below shows that recipes with rating of 3, 4 and 5 are more likely to be non-sugary recipes while the recipes with rating of 1 and 2 are more likely to be sugary recipes. 
 
 <iframe
   src="assets/rating_sugar.html"
@@ -174,12 +174,6 @@ For this section, we investigated the relationship between the cooking time in m
 
 Interestingly, the graph shows that as the cooking time increases the proportion of sugar in a recipe fluctuates more and more. According to the plot, tecipes take a long time could be either sugary or savory dishes. Also, the shapes of the line for mean and median looks very similar, especially for the recipes with shorter cooking time.
 
-<iframe
-  src="assets/interesting_agg.html"
-  width="800"
-  height="600"
-  frameborder="0"
-></iframe>
 
 ## Assessment of Missingness
 
