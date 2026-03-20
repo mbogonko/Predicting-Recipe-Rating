@@ -129,7 +129,12 @@ Here are all the columns of the cleaned df.
 
 Our cleaned dataframe ended up with 234429 rows and 30 columns. Here are the first 5 rows of ~unique recipes of our cleaned dataframe for illustration. Since there is a lot of columns for the merged dataframe, we selected the columns that are most relevant to our questions for display. Scroll right to view more columns.
 
-
+<iframe
+  src="assets/Screenshot 2026-03-20 062013.png"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
 
 ### Univariate Analysis
@@ -158,19 +163,12 @@ For this analysis, we examined the distribution of the rating of the recipe cond
 
 For this section, we investigated the relationship between the cooking time in minutes and proportion of sugar of the recipes. First, we created a small dataframe, `'filter_df'` to store the cooking time in minutes without outliers. We identified the outliers using the IQR method. After grouping the cooking time and proportion of sugar in a pivot table shown below, we created a data visualization to understand it better.
 
-| minutes | ('mean', 'prop_sugar') | ('median', 'prop_sugar') | ('min', 'prop_sugar') | ('max', 'prop_sugar') |
-| ------: | ---------------------: | -----------------------: | --------------------: | --------------------: |
-|       0 |              0.0137804 |                0.0137804 |             0.0137804 |             0.0137804 |
-|       1 |                0.29681 |                 0.212177 |                     0 |               1.02985 |
-|       2 |               0.316258 |                  0.25641 |                     0 |               1.06358 |
-|       3 |               0.279901 |                  0.19305 |                     0 |               1.03192 |
-|       4 |               0.276908 |                 0.235205 |                     0 |               1.04322 |
-|     ... |                    ... |                      ... |                   ... |                   ... |
-|     115 |               0.132994 |                0.0705617 |                     0 |              0.955342 |
-|     116 |                 0.2303 |                   0.2303 |              0.133949 |              0.326652 |
-|     117 |              0.0412412 |                0.0412412 |             0.0412412 |             0.0412412 |
-|     118 |               0.378571 |                 0.378571 |              0.378571 |              0.378571 |
-|     120 |               0.145882 |                0.0628323 |                     0 |               1.01558 |
+<iframe
+  src="assets/Screenshot 2026-03-20 061920.png"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
 Interestingly, the graph shows that as the cooking time increases the proportion of sugar in a recipe fluctuates more and more. According to the plot, tecipes take a long time could be either sugary or savory dishes. Also, the shapes of the line for mean and median looks very similar, especially for the recipes with shorter cooking time.
 
