@@ -130,9 +130,9 @@ Here are all the columns of the cleaned df.
 Our cleaned dataframe ended up with 234429 rows and 30 columns. Here are the first 5 rows of ~unique recipes of our cleaned dataframe for illustration. Since there is a lot of columns for the merged dataframe, we selected the columns that are most relevant to our questions for display. Scroll right to view more columns.
 
 <iframe
-  src="assets/Screenshot 2026-03-20 062013.png"
-  width="800"
-  height="600"
+  src="assets/Screenshot 2026-03-20 061920.png"
+  width="600"
+  height="400"
   frameborder="0"
 ></iframe>
 
@@ -161,10 +161,10 @@ For this analysis, we examined the distribution of the rating of the recipe cond
 
 ### Interesting Aggregates
 
-For this section, we investigated the relationship between the cooking time in minutes and proportion of sugar of the recipes. First, we created a small dataframe, `'filter_df'` to store the cooking time in minutes without outliers. We identified the outliers using the IQR method. After grouping the cooking time and proportion of sugar in a pivot table shown below, we created a data visualization to understand it better.
+For this section, we investigated the distribution of the proportion of ratings for each year. We can see that later years tend to have more low ratings. 
 
 <iframe
-  src="assets/Screenshot 2026-03-20 061920.png"
+  src="assets/Screenshot 2026-03-20 062013.png"
   width="800"
   height="600"
   frameborder="0"
