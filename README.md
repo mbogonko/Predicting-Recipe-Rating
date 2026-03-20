@@ -183,11 +183,11 @@ Interestingly, the graph shows that as the cooking time increases the proportion
 
 ## Assessment of Missingness
 
-Three columns, `'date'`, `'rating'`, and `'review'`, in the merged dataset have a significant amount of missing values, so we decided to assess the missingness on the dataframe.
+Three columns, `'date'`, `'rating'`, and `'review'`, in the merged dataset have missing values, so we decided to assess the missingness on the dataframe. The `'date'` only has one missing entry so I will focus on the other two columns
 
 ### MNAR Analysis
 
-I believe that the missingness of the `'date'` column is MNAR. It is possible that the system went down for a day and may have not recorded dates for a certain review, meaning that the missingness depends on the date. 
+I do not believe `'review'` is MNAR. I think it could be MAR because people with mediocre ratings may not feel as strong and therefore not leave reviews, making the missingness dependendant on rating.
 
 ### Missingness Dependency
 
@@ -213,7 +213,7 @@ We ran a permutation test by shuffling the missingness of rating for 500 times t
   frameborder="0"
 ></iframe>
 
-The **observed statistic** of **0.45** is indicated by the red vertical line on the graph. Since the **p_value** that we found **(0.0)** is < 0.05 which is the significance level that we set, we **reject the null hypothesis**. The missingness of `'rating'` does depend on the number of tags.
+The **observed statistic** of **0.45** is indicated by the red vertical line on the graph. Since the **p_value** that we found **(0.0)** is < 0.05 which is the significance level that we set, we **reject the null hypothesis**. The missingness of `'rating'` does depend on the number of tags (MAR).
 
 > Minutes and Rating
 
@@ -255,76 +255,70 @@ The reason we chose to run a permutation test is because we do not have any info
 
 The **observed statistic** is **0.031**.
 
-Then we shuffled the ratings for 500 times to collect 500 simulating mean differences in the two distributions as described in the test statistic. We got a **p-value** of **0.001**.
+Then we shuffled the ratings for 500 times to collect 500 simulating mean differences in the two distributions as described in the test statistic. We got a **p-value** of **0.0**.
 
 
 #### Conclusion of Permutation Test
 
-Since the **p-value** that we found **(0.0)** is less than the significance level of 0.05, we **reject the null hypothesis**. People do not rate all the recipes on the same scale, and they tend to rate sugary recipes lower. One plausible explanation for this founding could be that people are concerned with health risks relating to sugary recipes, such as diabetes.
+Since the **p-value** that we found **(0.0)** is less than the significance level of 0.05, we **reject the null hypothesis**. People do not rate all the recipes on the same scale, and they tend to rate high carb recipes lower. One plausible explanation for this founding could be that people are concerned with feeling more unhealthy eating carbs recipes.
 
 ## Framing a Prediction Problem
 
 We plan to **predict rating of a recipe** which would be a **classification problem** since we can treat rating as a ordinal categorical variable if we round the average rating so that we only have [1, 2, 3, 4, 5] as possible values. To address our prediction problem, we will build a multi-class classifier since our average ratings have 5 possible values that the model will predict from.
 
-We chose the average rating of a recipe as a response variable because it is a good representation of the overall rating of a recipe. We have also previously found significant correlation between rating and sugary recipes, which are recipes with proportion of sugar higher than the average proportion of sugar, so we may be able to predict the rating through the proportion of sugar.
+We chose the average rating of a recipe as a response variable because it is a good representation of the overall rating of a recipe. We have also previously found significant correlation between rating and the carb amount in recipes, so we may be able to predict the rating through the carb amount.
 
-To evaluate our model, we will use the f1 score instead of accuracy, because the distribution for the ratings are heavily skewed left with most ratings concentrated in the higher ratings (4-5). This means that there are more recipes with higher average ratings. If we use accuracy, the model's performance may be misleading due to the imbalanced classes.
+To evaluate our model, we will use the f1 score instead of accuracy, because the distribution for the ratings are heavily skewed left with most ratings concentrated in the higher ratings (4-5). This means that there are more recipes with higher average ratings. If we use accuracy, the model's performance may be misleading due to the imbalanced classes, and f1 takes into account imbalanced data.
 
 The information we have prior making our prediction are all the columns in the `rating` dataset, which are listed in the introduction section. All those columns are features relating to the recipes themselves, thus we would have access to it even though no one has made a rating and review on them.
 
 ## Baseline Model
 
-For our baseline model, we are utilizing a random forest classifier and split the data points into training and test sets. The features we are using for this model is `'prop_sugar'`, a column containing quantitative numerical values, and `'is_dessert'`, a column containing nominal values since they are boolean values.
+For our baseline model, we are utilizing a random forest classifier and split the data using 5 k-fold validation, which splits the data into training, testing, and validation. The features we are using for this model is `'calories'` and `'carb_percent'`, both quantitative columns, and `'easy'`, a column containing nominal values since they are boolean values that represent if 'easy' is in the recipe tag.
 
-We one hot encoded the boolean values in `'is_dessert'` with the corresponding 0 and 1 values and dropped one of the encoded columns. This step allows us to train the model appropriately.
+We one hot encoded the boolean values in `'easy'` with the corresponding 0 and 1 values and dropped one of the encoded columns. This step allows us to train the model appropriately.
 
-The metric, **F1 score**, of this model is **0.87**. The F1 score for each rating categoires are 0.20, 0.47, 0.50, 0.74, and 0.92 for rating of 1s, 2s, 3s, 4s, and 5s respectively. The metrics let us know that the model predicts better for rating of 4s and 5s and not as accurate for the lower ratings. The reason for this could be that there are more recipes with rating 4s and 5s in the dataset compared to other ratings. With the more data points, the model predicted better for higher ratings.
+The metric, **F1 weighted score**, of this model is **0.84**. In using k-fold cross validation, we are able to ensure more generalization as all parts of the data are trained, and so this is already a decent model.
 
 ## Final Model
 
-For the final model, we used `'is_dessert'`, `'minutes'`, `'calories (#)'`, `'submitted'`, and `'prop_sugar'` as the features.
+For the final model, we used `'easy'`, `'n_steps'`, `'calories'`, `'carb_percent'`, `'sugar_percent'`, and `'year'` as the features.
 
-`'is_dessert'`
+`'easy'`
 
-The column categorizes the data as dessert or not dessert by checking if the recipe's tags contain 'dessert'. We chose this feature because based on the the bar graph we construsted between `'average rating'` and `'is_dessert'`, we saw that for the higher ratings (4 and 5) there are less dessert recipes. This trend might be useful in helping the model predict the average rating of a recipe. We one hot encoded this column like we did for the baseline model.
+The column categorizes the data as easy or not easy by checking if the recipe's tags contain 'dessert'. I chose this feature because based on the the box plots I constructed for n_steps, higher ratings tend to have more steps. Intuitively, I figured that easier recipes too may also be able to predict lower rating.
 
-`'minutes'`
+`'n_steps'`
 
-The column is the cooking time of the recipe in minutes. By constructing a bivariate table of the `'minutes'` and `'average rating'`, we learned that the recipes took longer to cook tend to have medicore ratings, like ratings of 2 or 3. The differences between the mean minutes among the different ratings makes us believe that it could help with our predicition model. It is also reasonable that a recipe that takes long to make would lead to lower rating since people are busy nowadays and lack patience. We used `StandardScaler` to standardize the `'minutes'` feature to guarantee that the cooking time are in a comparable range since some recipes has extremely long cooking times.
+As said above, there was a correlation between more steps and higher rating, so this may help our predictions.
 
-`'calories (#)'`
+`'calories'`
 
-The column contains the total calories of the recipe. By constructing a bivariate table of the `'calories (#)'` and `'average rating'`, we learned that recipes with higher rating typically has less calories. A lower calories generally indicates that the recipe is healthier, thus it is logical that it has a higher rating. Knowing this, we think the relationship between `'calories (#)'` and `'average rating'` would help our model predict better. To transform the `'calories (#)'` feature, we used `RobustScaler`, which scales the numerical features while handling outliers effectively. From the EDA, we learned that the columns contains many outliers, and it might introduces bias to our model, so we engineered the feature to minimize the ourlier effects.
+I created a pivot table that looked at the calories between high carb and low carb recipes for each rating. The meadian calories tended to be more towards the center for higher ratings for both low and high carb recipes, as people may want a medium amount of calories. This will also help to add context to the carb and sugar features as greater values of these can be explained by the amount of calories.
 
-`'submitted'`
+`'carb_percent'` and `'sugar_percent'`
 
-The column contains information of the date that the recipe was submitted. In data cleaning process, we converted the column to be `datetime[ns]` and now we pulled out only the year using `FunctionTransformer`. When we created a table of `'submitted'` and `'average rating'`, we noticed that recipes submitted in recent years has a lower ratings. This could be due to the lack of novelity of newer recipes since most of the classic recipes might already posted on the website. The trend between `'submitted'` and `'average rating'` could be also useful in improving our model.
+I created a bar chart that showed higher ratings have less sugary ratings and vice versa. Similarly, the hypothesis test showed that lower carb recipes are rated higher. These will both help in predicting rating.
 
-`'prop_sugar'`
+`'year'`
 
-As mentioned numerous time in earlier sections, this column contains information of the proportion of sugar in calories out of the total calories of the recipe. According to our hypothesis testing, people seems more likely to rate a sugary recipe lower than recipes that are not sugary. This takeaway motivates us use this feature since the relationship could be a significant deciding factor when making predicition on the `'average rating'`. For this feature, we will leave the column as it is.
+I created a table that tracked the proportion of each rating per year and saw that there are more lower ratings in recent years. This may help to predict rating.
 
-We used `RandomForestClassifier` as our modeling algorithm and conducted `GridSearchCV` to tune the hyperparameters of `max_depth` and `n_estimators` of the `RandomForestClassifier`. Decision trees are prone to high variance, and the two hyperparameters we chose serve a way to control the variance and avoid overfitting the training set. The best combination of the hyperparameters is 42 for the `max_depth` and 142 for the `n_estimators`.
+We used `RandomForestClassifier` as our modeling algorithm and conducted `GridSearchCV` to tune the hyperparameters of `max_depth` and `min_samples_split` of the `RandomForestClassifier`. Decision trees are prone to high variance, and the two hyperparameters we chose serve a way to control the variance and avoid overfitting the training set. The best combination of the hyperparameters is 30 for the `max_depth` and 2 for the `min_samples_split`.
 
-The metric, **F1 Score**, of the final model is **0.92**, which is a 0.05 increase from the F1 Score of the baseline model. Moreover, the F1 score of each of the rating also improved. The F1 score for each rating categoires are now 0.36, 0.66, 0.68, 0.85, and 0.95 for rating of 1s, 2s, 3s, 4s, and 5s respectively.
+The metric, **F1 Weighted Score**, of the final model is **0.92**, which is a 0.08 increase from the F1 Score of the baseline model.
 
 ## Fairness Analysis
 
-For our fairness analysis, we split the recipes into two groups: high calories and low calories. We designated high calorie recipes to be ones with calories > 301.1 and low calorie recipes to be ones with calories <= 301.1. We found that the median calories for our data set is **301.1** which is why we chose it as the threshold. We used median instead of mean, because we previously found that calories had many high outliers which can skew our results. We chose to evaluate the **precision parity** of the model for the two groups, because we think it’s more important for the model to correctly identify the rating of a recipe among all instances of that rating. False positives would not be good since it would mislead users with the incorrectly labeled ratings. False positives would not be good since it would mislead users with the incorrectly labeled ratings. For example, if we predicted recipes with lower calories to have a bad rating, people would be discouraged to try them. For recipes with lower calories, it wouldn’t be good to mislabel them, as low calorie recipes may be healthier for people.
+For our fairness analysis, we split the recipes into two groups: recipes that have 'easy' in the tag and recipes that don't. We chose to evaluate the **precision parity** of the model for the two groups.
 
-**Null Hypothesis**: Our model is fair. Its precision for recipes with higher calories and lower calories are roughly the same, and any differences are due to random chance.
+**Null Hypothesis**: Our model is fair. Its precision for recipes with 'easy' recipes and non 'easy' recipes are roughly the same, and any differences are due to random chance.
 
-**Alternative Hypothesis**: Our model is unfair. Its precision for recipes with lower calories is lower than its precision for recipes with higher calories.
+**Alternative Hypothesis**: Our model is unfair. Its precision for 'easy' recipes is lower than its precision for non 'easy' recipes.
 
-**Test Statistic**: Difference in precision (low calories - high calories)
+**Test Statistic**: Difference in precision ('easy' - non 'easy')
 
 **Significance Level**: 0.05
 
-<iframe
-  src="assets/empirical_precision.html"
-  width="800"
-  height="600"
-  frameborder="0"
-></iframe>
 
-To run the permutation test, we created a new column `is_high_calories` to differentiate between the low and high calorie recipes. When we took the difference in their precision, we got an observed test statistic of **-0.023**. We shuffled the `is_high_calories` column for 1000 times to collect 1000 simulating differences in the two distributions as described in the test statistic. After running our permutation test, we got a p-value of **0.0**. Since the p-value of 0.0 is less than 0.05, we reject the null hypothesis that our model is fair. The model's precision for recipes with lower calories is lower than its precision for recipes with higher calories.
+I ran 500 trials to simulate the difference in precision score between the two groups after shuffling. The observed test statistic of the difference in precision for our model was **0.00024**. \ After running our permutation test, we got a p-value of **0.0**. Since the p-value of 0.0 is less than 0.05, we reject the null hypothesis that our model is fair. The model's precision for 'easy' recipes is lower than the precision for non 'easy' recipes.
